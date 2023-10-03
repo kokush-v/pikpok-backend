@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { UserLogin, UserRegistration } from "../types/requests";
-import { UserRegistrationResponse } from "../types/responces";
-import { userLogin, userReg } from "../api/controllers/user.actions";
+import { UserLogin, UserRegistration, Video } from "../types/requests";
+import { UserRegistrationResponse, VideoUploadResponse } from "../types/responces";
+import { userLogin, userReg } from "../api/controllers/user.controller";
+import { videoUpload } from "../api/controllers/video.controller";
 
 const reg = async (
 	req: Request<unknown, unknown, UserRegistration>,
@@ -41,7 +42,7 @@ const login = async (
 			status: 200,
 		});
 	} catch (error: any) {
-		res.status(400).json({ data: error, status: 400 });
+		res.status(400).json({ data: { error: error.message }, status: 400 });
 	}
 };
 
@@ -51,6 +52,25 @@ const get = async (req: any, res: Response<UserRegistrationResponse>, next: Next
 
 		res.status(200).json({
 			data: user,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: error, status: 400 });
+	}
+};
+
+const uploadVideo = async (
+	req: Request,
+	res: Response<VideoUploadResponse>,
+	next: NextFunction
+) => {
+	try {
+		const file = req.file;
+
+		const response = await videoUpload(file);
+
+		res.status(200).json({
+			data: file,
 			message: "Pikpoker",
 			status: 200,
 		});
@@ -64,5 +84,6 @@ export const userActions = {
 		reg,
 		login,
 		get,
+		uploadVideo,
 	},
 };

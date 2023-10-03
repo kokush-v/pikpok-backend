@@ -1,0 +1,22 @@
+export const corsConfig = {
+	origin: "http://ec2-13-53-80-251.eu-north-1.compute.amazonaws.com",
+	credentials: true,
+	methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+	allowedHeaders: [
+		"Content-Type",
+		"Content-Length",
+		"Connection",
+		"Authorization",
+		"Access-Control-Allow-Origin",
+		"Access-Control-Allow-Methods",
+		"Access-Control-Allow-Headers",
+		"Cache-Control",
+		"RateLimit-Limit",
+		"RateLimit-Remaining",
+		"RateLimit-Reset",
+		"Retry-After",
+		"ETag",
+		"Date",
+		"Keep-Alive",
+	],
+};

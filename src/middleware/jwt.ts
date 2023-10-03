@@ -11,7 +11,7 @@ export const generateToken = (user: UserModel) => {
 	return token;
 };
 
-export const validateToken = (req: any, res: Response, next: NextFunction) => {
+export const validateAuthToken = (req: any, res: Response, next: NextFunction) => {
 	if (req.method === "OPTIONS") {
 		next();
 	}

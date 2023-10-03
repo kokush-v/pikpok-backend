@@ -8,3 +8,7 @@ export interface Status {
 export interface UserRegistrationResponse extends Status {
 	data: User | any;
 }
+
+export interface VideoUploadResponse extends Status {
+	data: any;
+}
