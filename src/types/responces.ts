@@ -6,5 +6,5 @@ export interface Status {
 }
 
 export interface UserRegistrationResponse extends Status {
-	data: User;
+	data: User | any;
 }

@@ -8,13 +8,8 @@ generator client {
 }
 
 model UserModel {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  email            String   @unique
-  password         String
-  firstName        String
-  lastName         String
-  birth            DateTime
-  phoneNumber      String
-  creditCardNumber String
-  userType         String
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  password String
+  userName String
 }

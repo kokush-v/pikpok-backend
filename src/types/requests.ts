@@ -1,13 +1,16 @@
+import { Request } from "express";
+
 export interface User {
-	firstName: string;
-	lastName: string;
-	birth: Date;
-	phoneNumber: string;
-	creditCardNumber: string;
-	userType: string;
+	userName: string;
 }
 
-export interface UserRegistration extends User {
+export interface UserLogin {
 	email: string;
 	password: string;
+}
+
+export interface UserRegistration extends User, UserLogin {}
+
+export interface AuthenticatedRequest extends Request {
+	user: User;
 }
