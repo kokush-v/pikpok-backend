@@ -52,10 +52,9 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 
 	const downloadURL = await getDownloadURL(snapshot.ref);
 
-	const dbResponse = await prisma.videoModel.create({
+	const dbResponse = await prisma.avatarModel.create({
 		data: {
 			downloadUrl: downloadURL,
-			name: file.originalname,
 			uploadDate: dateTime,
 			userId: user.id,
 		},

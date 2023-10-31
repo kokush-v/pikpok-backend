@@ -28,3 +28,10 @@ model VideoModel {
   uploadDate  DateTime    @default(now())
   userId      String
 }
+
+model AvatarModel {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  downloadUrl String   @unique
+  uploadDate  DateTime @default(now())
+  userId      String
+}
