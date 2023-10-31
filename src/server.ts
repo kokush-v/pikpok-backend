@@ -4,8 +4,6 @@ import logger from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { corsConfig } from "./configs/cors.config";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./configs/firebase.config";
 
 const app: Express = express();
 const port = 5462;

@@ -7,11 +7,18 @@ import { generateToken } from "../../middleware/jwt";
 const prisma = new PrismaClient();
 
 export const userReg = async (user: UserRegistration): Promise<User> => {
+	const dbUser = await prisma.userModel.findUnique({
+		where: { email: user.email },
+	});
+
+	if (dbUser) throw new Error("User already exist");
+
 	const result = await prisma.userModel.create({
 		data: { ...user, password: await hashPassword(user.password) },
 	});
 	return result as User;
 };
+
 export const userLogin = async ({
 	email,
 	password,

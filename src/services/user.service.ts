@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { UserLogin, UserRegistration, Video } from "../types/requests";
-import { UserRegistrationResponse, VideoUploadResponse } from "../types/responces";
+import { User, UserLogin, UserRegistration, UserFile } from "../types/requests";
+import { UserRegistrationResponse, FileUploadResponse } from "../types/responces";
 import { userLogin, userReg } from "../api/controllers/user.controller";
-import { videoUpload } from "../api/controllers/video.controller";
+import { avatarUpload, videoUpload } from "../api/controllers/file.controller";
 
 const reg = async (
 	req: Request<unknown, unknown, UserRegistration>,
@@ -19,7 +19,7 @@ const reg = async (
 			status: 200,
 		});
 	} catch (error: any) {
-		res.status(400).json({ data: error, status: 400 });
+		res.status(400).json({ data: { error: error.message }, status: 400 });
 	}
 };
 
@@ -55,27 +55,45 @@ const get = async (req: any, res: Response<UserRegistrationResponse>, next: Next
 			status: 200,
 		});
 	} catch (error: any) {
-		res.status(400).json({ data: error, status: 400 });
+		res.status(400).json({ data: { error: error.message }, status: 400 });
 	}
 };
 
-const uploadVideo = async (
-	req: Request,
-	res: Response<VideoUploadResponse>,
-	next: NextFunction
-) => {
+const uploadVideo = async (req: Request, res: Response<FileUploadResponse>, next: NextFunction) => {
 	try {
-		const file = req.file;
+		const file: UserFile = {
+			user: req.user,
+			file: req.file,
+		};
 
 		const response = await videoUpload(file);
 
 		res.status(200).json({
-			data: file,
-			message: "Pikpoker",
+			data: { fileUrl: response },
+			message: "Video was uploaded",
 			status: 200,
 		});
 	} catch (error: any) {
-		res.status(400).json({ data: error, status: 400 });
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
+const uploadPhoto = async (req: Request, res: Response<FileUploadResponse>, next: NextFunction) => {
+	try {
+		const file: UserFile = {
+			user: req.user,
+			file: req.file,
+		};
+
+		const response = await avatarUpload(file);
+
+		res.status(200).json({
+			data: { fileUrl: response },
+			message: "Avatar was uploaded",
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
 	}
 };
 
@@ -85,5 +103,6 @@ export const userActions = {
 		login,
 		get,
 		uploadVideo,
+		uploadPhoto,
 	},
 };

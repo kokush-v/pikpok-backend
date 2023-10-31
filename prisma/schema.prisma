@@ -1,15 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model TagsModel {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  VideoModel   VideoModel? @relation(fields: [videoModelId], references: [id])
+  videoModelId String?     @db.ObjectId
 }
 
 model UserModel {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   email    String @unique
   password String
-  userName String
+  username String
+}
+
+model VideoModel {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  downloadUrl String      @unique
+  name        String
+  tags        TagsModel[]
+  uploadDate  DateTime    @default(now())
+  userId      String
 }

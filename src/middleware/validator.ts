@@ -9,7 +9,7 @@ export const validateRegistration = (
 	next: NextFunction
 ) => {
 	const validationRules = [
-		body("userName")
+		body("username")
 			.isLength({ min: 3, max: 20 })
 			.withMessage("Username must be at least 3 characters long"),
 		body("email").isEmail().withMessage("Email format is incorrect"),

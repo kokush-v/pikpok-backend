@@ -9,6 +9,10 @@ export interface UserRegistrationResponse extends Status {
 	data: User | any;
 }
 
-export interface VideoUploadResponse extends Status {
-	data: any;
+export interface FileUploadResponse extends Status {
+	data:
+		| {
+				fileUrl: string;
+		  }
+		| any;
 }

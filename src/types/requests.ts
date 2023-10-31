@@ -1,7 +1,6 @@
-import { Request } from "express";
-
 export interface User {
-	userName: string;
+	id: string;
+	username: string;
 }
 
 export interface UserLogin {
@@ -11,17 +10,7 @@ export interface UserLogin {
 
 export interface UserRegistration extends User, UserLogin {}
 
-export interface AuthenticatedRequest extends Request {
-	user: User;
-}
-
-export interface Video {
-	fieldname: string;
-	originalname: string;
-	encoding: string;
-	mimetype: string;
-	buffer: {
-		type: string;
-		data: Array<number>;
-	};
+export interface UserFile {
+	user: User | undefined;
+	file: Express.Multer.File | undefined;
 }

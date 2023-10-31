@@ -10,8 +10,14 @@ export const routes = (app: Express) => {
 	app.get("/user", validateAuthToken, userActions.api.get);
 	app.post(
 		"/user/video/post",
-		upload.single("video"),
+		upload.single("file"),
 		validateAuthToken,
 		userActions.api.uploadVideo
+	);
+	app.post(
+		"/user/avatar/post",
+		upload.single("file"),
+		validateAuthToken,
+		userActions.api.uploadPhoto
 	);
 };
