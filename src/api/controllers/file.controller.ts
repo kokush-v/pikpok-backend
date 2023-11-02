@@ -52,6 +52,15 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 
 	const downloadURL = await getDownloadURL(snapshot.ref);
 
+	await prisma.userModel.update({
+		where: {
+			id: user.id,
+		},
+		data: {
+			avatarUrl: downloadURL,
+		},
+	});
+
 	const dbResponse = await prisma.avatarModel.create({
 		data: {
 			downloadUrl: downloadURL,

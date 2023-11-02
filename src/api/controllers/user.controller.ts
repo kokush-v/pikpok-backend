@@ -14,9 +14,21 @@ export const userReg = async (user: UserRegistration): Promise<User> => {
 	if (dbUser) throw new Error("User already exist");
 
 	const result = await prisma.userModel.create({
-		data: { ...user, password: await hashPassword(user.password) },
+		data: {
+			...user,
+			password: await hashPassword(user.password),
+			avatarUrl:
+				"https://firebasestorage.googleapis.com/v0/b/pikpok-7e43d.appspot.com/o/avatars%2Fdefault-avatar.jpeg?alt=media&token=16fe35e9-f2b7-4306-ac55-5f3131c33ca6",
+		},
+		select: {
+			id: true,
+			username: true,
+			email: true,
+			avatarUrl: true,
+		},
 	});
-	return result as User;
+
+	return result;
 };
 
 export const userLogin = async ({
@@ -37,4 +49,18 @@ export const userLogin = async ({
 	} else {
 		throw new Error("Incorrect password");
 	}
+};
+
+export const findUser = async (userId: string): Promise<User> => {
+	const dbUser = await prisma.userModel.findUnique({
+		where: { id: userId },
+		select: {
+			id: true,
+			username: true,
+		},
+	});
+
+	if (!dbUser) throw new Error("User doesn`t exist");
+
+	return dbUser;
 };

@@ -14,3 +14,7 @@ export interface UserFile {
 	user: User | undefined;
 	file: Express.Multer.File | undefined;
 }
+
+export interface GetUserParam {
+	userId: string;
+}

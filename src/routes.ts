@@ -5,19 +5,21 @@ import { validateAuthToken } from "./middleware/jwt";
 import { upload } from "./middleware/firebase";
 
 export const routes = (app: Express) => {
-	app.post("/registration", validateRegistration, userActions.api.reg);
-	app.post("/login", validateLogin, userActions.api.login);
+	app.post("/auth/registration", validateRegistration, userActions.api.reg);
+	app.post("/auth/login", validateLogin, userActions.api.login);
+
 	app.get("/user", validateAuthToken, userActions.api.get);
+	app.get("/user/:userId", userActions.api.get);
 	app.post(
-		"/user/video/post",
+		"/user/:userId/video/post",
 		upload.single("file"),
 		validateAuthToken,
 		userActions.api.uploadVideo
 	);
 	app.post(
-		"/user/avatar/post",
+		"/user/:userId/avatar/update",
 		upload.single("file"),
 		validateAuthToken,
-		userActions.api.uploadPhoto
+		userActions.api.updateAvatar
 	);
 };

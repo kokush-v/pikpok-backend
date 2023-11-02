@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { User, UserLogin, UserRegistration, UserFile } from "../types/requests";
+import { User, UserLogin, UserRegistration, UserFile, GetUserParam } from "../types/requests";
 import { UserRegistrationResponse, FileUploadResponse } from "../types/responces";
-import { userLogin, userReg } from "../api/controllers/user.controller";
+import { findUser, userLogin, userReg } from "../api/controllers/user.controller";
 import { avatarUpload, videoUpload } from "../api/controllers/file.controller";
 
 const reg = async (
@@ -46,7 +46,30 @@ const login = async (
 	}
 };
 
-const get = async (req: any, res: Response<UserRegistrationResponse>, next: NextFunction) => {
+const get = async (
+	req: Request<GetUserParam>,
+	res: Response<UserRegistrationResponse>,
+	next: NextFunction
+) => {
+	try {
+		const { userId } = req.params;
+
+		const user = await findUser(userId);
+
+		res.status(200).json({
+			data: user,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
+const getCurrent = async (
+	req: Request,
+	res: Response<UserRegistrationResponse>,
+	next: NextFunction
+) => {
 	try {
 		const user = req.user;
 
@@ -78,7 +101,11 @@ const uploadVideo = async (req: Request, res: Response<FileUploadResponse>, next
 	}
 };
 
-const uploadPhoto = async (req: Request, res: Response<FileUploadResponse>, next: NextFunction) => {
+const updateAvatar = async (
+	req: Request,
+	res: Response<FileUploadResponse>,
+	next: NextFunction
+) => {
 	try {
 		const file: UserFile = {
 			user: req.user,
@@ -89,7 +116,7 @@ const uploadPhoto = async (req: Request, res: Response<FileUploadResponse>, next
 
 		res.status(200).json({
 			data: { fileUrl: response },
-			message: "Avatar was uploaded",
+			message: "Avatar was changed",
 			status: 200,
 		});
 	} catch (error: any) {
@@ -103,6 +130,6 @@ export const userActions = {
 		login,
 		get,
 		uploadVideo,
-		uploadPhoto,
+		updateAvatar,
 	},
 };
