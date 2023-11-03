@@ -8,7 +8,7 @@ export const routes = (app: Express) => {
 	app.post("/auth/registration", validateRegistration, userActions.api.reg);
 	app.post("/auth/login", validateLogin, userActions.api.login);
 
-	app.get("/user", validateAuthToken, userActions.api.get);
+	app.get("/user", validateAuthToken, userActions.api.getCurrent);
 	app.get("/user/:userId", userActions.api.get);
 	app.post(
 		"/user/:userId/video/post",

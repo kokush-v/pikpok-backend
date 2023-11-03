@@ -129,6 +129,7 @@ export const userActions = {
 		reg,
 		login,
 		get,
+		getCurrent,
 		uploadVideo,
 		updateAvatar,
 	},
