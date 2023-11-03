@@ -6,7 +6,16 @@ import { User } from "../types/requests";
 const secret: string = process.env.JWT_SECRET || "secret";
 
 export const generateToken = (user: UserModel) => {
-	const token = sign({ username: user.username, id: user.id }, secret);
+	const token = sign(
+		{
+			username: user.username,
+			id: user.id,
+			avatarUrl: user.avatarUrl,
+			subscribers: user.subscribers,
+			subscribtions: user.subscribtions,
+		},
+		secret
+	);
 
 	return token;
 };

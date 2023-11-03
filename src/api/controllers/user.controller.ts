@@ -57,6 +57,9 @@ export const findUser = async (userId: string): Promise<User> => {
 		select: {
 			id: true,
 			username: true,
+			avatarUrl: true,
+			subscribers: true,
+			subscribtions: true,
 		},
 	});
 
