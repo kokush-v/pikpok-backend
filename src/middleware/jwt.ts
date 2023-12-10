@@ -47,7 +47,7 @@ export const validateAuthTokenPublic = (req: any, res: Response, next: NextFunct
 	try {
 		const token = req.cookies["access-token"];
 		if (!token) {
-			next();
+			return next();
 		}
 		const decodedData = verify(token, secret);
 		req.user = decodedData as ReqUser;
