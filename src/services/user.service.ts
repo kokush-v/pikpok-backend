@@ -88,7 +88,11 @@ const get = async (
 
 const getCurrent = async (req: Request, res: Response<GetUserResponse>, next: NextFunction) => {
 	try {
-		const user = req.user;
+		const reqUser = req.user;
+
+		if (!reqUser) throw "Not authorize";
+
+		const user = await findUser(reqUser?.id);
 
 		res.status(200).json({
 			data: user,

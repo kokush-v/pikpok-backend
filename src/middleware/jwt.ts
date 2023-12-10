@@ -10,9 +10,6 @@ export const generateToken = (user: UserModel) => {
 		{
 			username: user.username,
 			id: user.id,
-			avatarUrl: user.avatarUrl,
-			subscribers: user.subscribers,
-			subscribtions: user.subscribtions,
 		},
 		secret
 	);

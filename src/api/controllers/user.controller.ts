@@ -110,8 +110,8 @@ export const unFollow = async (userId: string, followId: string) => {
 			subscribtions: {
 				set: await prisma.userModel
 					.findUnique({ where: { id: userId } })
-					.then((follow) =>
-						follow?.subscribtions.filter((unSubscribtionId) => unSubscribtionId !== followId)
+					.then((user) =>
+						user?.subscribtions.filter((unSubscribtionId) => unSubscribtionId !== followId)
 					),
 			},
 		},
