@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import { UserRegistration, User, UserLogin } from "../../types/requests";
+import { UserRegistration, ReqUser, UserLogin } from "../../types/requests";
 import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
+import { GetUser } from "../../types/responces";
 
 const prisma = new PrismaClient();
 
-export const userReg = async (user: UserRegistration): Promise<User> => {
+export const userReg = async (user: UserRegistration): Promise<ReqUser> => {
 	const dbUser = await prisma.userModel.findUnique({
 		where: { email: user.email },
 	});
@@ -34,7 +35,7 @@ export const userReg = async (user: UserRegistration): Promise<User> => {
 export const userLogin = async ({
 	email,
 	password,
-}: UserLogin): Promise<{ user: User; token: string }> => {
+}: UserLogin): Promise<{ user: ReqUser; token: string }> => {
 	const dbUser = await prisma.userModel.findUnique({
 		where: { email: email },
 	});
@@ -51,7 +52,7 @@ export const userLogin = async ({
 	}
 };
 
-export const findUser = async (userId: string): Promise<User> => {
+export const findUser = async (userId: string): Promise<GetUser> => {
 	const dbUser = await prisma.userModel.findUnique({
 		where: { id: userId },
 		select: {
@@ -68,7 +69,7 @@ export const findUser = async (userId: string): Promise<User> => {
 	return dbUser;
 };
 
-export const follow = async (userId: string, followId: string) =>
+export const follow = async (userId: string, followId: string) => {
 	await prisma.userModel.update({
 		where: { id: followId },
 		data: {
@@ -77,8 +78,18 @@ export const follow = async (userId: string, followId: string) =>
 			},
 		},
 	});
-export const unFollow = async (userId: string, followId: string) =>
-	prisma.userModel.update({
+
+	await prisma.userModel.update({
+		where: { id: userId },
+		data: {
+			subscribtions: {
+				push: followId,
+			},
+		},
+	});
+};
+export const unFollow = async (userId: string, followId: string) => {
+	await prisma.userModel.update({
 		where: {
 			id: followId,
 		},
@@ -90,6 +101,22 @@ export const unFollow = async (userId: string, followId: string) =>
 			},
 		},
 	});
+
+	await prisma.userModel.update({
+		where: {
+			id: userId,
+		},
+		data: {
+			subscribtions: {
+				set: await prisma.userModel
+					.findUnique({ where: { id: userId } })
+					.then((follow) =>
+						follow?.subscribtions.filter((unSubscribtionId) => unSubscribtionId !== followId)
+					),
+			},
+		},
+	});
+};
 
 export const isUserFollower = async (userId: string, followId: string): Promise<boolean> => {
 	const user = await prisma.userModel.findUniqueOrThrow({

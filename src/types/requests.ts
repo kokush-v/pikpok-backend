@@ -1,17 +1,22 @@
-export interface User {
+export interface ReqUser {
 	id: string;
 	username: string;
 }
 
-export interface UserLogin {
+export interface UserEmail {
 	email: string;
+}
+
+export interface UserPassword {
 	password: string;
 }
 
-export interface UserRegistration extends User, UserLogin {}
+export interface UserLogin extends UserEmail, UserPassword {}
+
+export interface UserRegistration extends ReqUser, UserLogin {}
 
 export interface UserFile {
-	user: User | undefined;
+	user: ReqUser | undefined;
 	file: Express.Multer.File | undefined;
 }
 

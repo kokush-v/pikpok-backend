@@ -1,12 +1,23 @@
-import { User } from "./requests";
+import { ReqUser, UserEmail } from "./requests";
 
 export interface Status {
 	status: string | number;
 	message?: string;
 }
 
+export interface GetUser extends ReqUser {
+	avatarUrl: string;
+	subscribers: string[];
+	subscribtions: string[];
+	followed?: boolean;
+}
+
 export interface UserRegistrationResponse extends Status {
-	data: User | any;
+	data: ReqUser | any;
+}
+
+export interface GetUserResponse extends Status {
+	data: GetUser | any;
 }
 
 export interface FileUploadResponse extends Status {

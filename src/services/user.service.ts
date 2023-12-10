@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
-	User,
+	ReqUser,
 	UserLogin,
 	UserRegistration,
 	UserFile,
@@ -11,6 +11,7 @@ import {
 	UserRegistrationResponse,
 	FileUploadResponse,
 	SubscribeResponse,
+	GetUserResponse,
 } from "../types/responces";
 import {
 	findUser,
@@ -66,16 +67,18 @@ const login = async (
 
 const get = async (
 	req: Request<GetUserParam>,
-	res: Response<UserRegistrationResponse>,
+	res: Response<GetUserResponse>,
 	next: NextFunction
 ) => {
 	try {
 		const { userId } = req.params;
-
+		const reqUser = req.user;
 		const user = await findUser(userId);
 
+		const followed = reqUser ? await isUserFollower(reqUser.id, user.id) : false;
+
 		res.status(200).json({
-			data: user,
+			data: { ...user, followed },
 			status: 200,
 		});
 	} catch (error: any) {
@@ -83,11 +86,7 @@ const get = async (
 	}
 };
 
-const getCurrent = async (
-	req: Request,
-	res: Response<UserRegistrationResponse>,
-	next: NextFunction
-) => {
+const getCurrent = async (req: Request, res: Response<GetUserResponse>, next: NextFunction) => {
 	try {
 		const user = req.user;
 
@@ -150,6 +149,10 @@ const followUser = async (
 	try {
 		const currentUser = req.user;
 		const { followId } = req.params;
+
+		if (currentUser?.id === followId) {
+			throw "Can't follow yourself";
+		}
 
 		if (!currentUser) {
 			throw "Not authorized";
