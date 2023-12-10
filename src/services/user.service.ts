@@ -1,7 +1,25 @@
 import { NextFunction, Request, Response } from "express";
-import { User, UserLogin, UserRegistration, UserFile, GetUserParam } from "../types/requests";
-import { UserRegistrationResponse, FileUploadResponse } from "../types/responces";
-import { findUser, userLogin, userReg } from "../api/controllers/user.controller";
+import {
+	User,
+	UserLogin,
+	UserRegistration,
+	UserFile,
+	GetUserParam,
+	GetSubscribeParams,
+} from "../types/requests";
+import {
+	UserRegistrationResponse,
+	FileUploadResponse,
+	SubscribeResponse,
+} from "../types/responces";
+import {
+	findUser,
+	follow,
+	isUserFollower,
+	unFollow,
+	userLogin,
+	userReg,
+} from "../api/controllers/user.controller";
 import { avatarUpload, videoUpload } from "../api/controllers/file.controller";
 
 const reg = async (
@@ -124,6 +142,41 @@ const updateAvatar = async (
 	}
 };
 
+const followUser = async (
+	req: Request<GetSubscribeParams>,
+	res: Response<SubscribeResponse>,
+	next: NextFunction
+) => {
+	try {
+		const currentUser = req.user;
+		const { followId } = req.params;
+
+		if (!currentUser) {
+			throw "Not authorized";
+		}
+
+		const isFollower = await isUserFollower(currentUser.id, followId);
+		let message = "User followed";
+
+		if (isFollower) {
+			unFollow(currentUser.id, followId);
+			message = "User unfollowed";
+		} else {
+			follow(currentUser.id, followId);
+		}
+
+		res.status(200).json({
+			data: {
+				success: "OK",
+			},
+			message,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
 export const userActions = {
 	api: {
 		reg,
@@ -132,5 +185,6 @@ export const userActions = {
 		getCurrent,
 		uploadVideo,
 		updateAvatar,
+		followUser,
 	},
 };

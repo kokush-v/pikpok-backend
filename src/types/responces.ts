@@ -16,3 +16,11 @@ export interface FileUploadResponse extends Status {
 		  }
 		| any;
 }
+
+export interface SubscribeResponse extends Status {
+	data:
+		| {
+				success: string;
+		  }
+		| any;
+}

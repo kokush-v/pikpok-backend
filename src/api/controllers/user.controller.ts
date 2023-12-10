@@ -67,3 +67,36 @@ export const findUser = async (userId: string): Promise<User> => {
 
 	return dbUser;
 };
+
+export const follow = async (userId: string, followId: string) =>
+	await prisma.userModel.update({
+		where: { id: followId },
+		data: {
+			subscribers: {
+				push: userId,
+			},
+		},
+	});
+export const unFollow = async (userId: string, followId: string) =>
+	prisma.userModel.update({
+		where: {
+			id: followId,
+		},
+		data: {
+			subscribers: {
+				set: await prisma.userModel
+					.findUnique({ where: { id: followId } })
+					.then((follow) => follow?.subscribers.filter((unFollowId) => unFollowId !== userId)),
+			},
+		},
+	});
+
+export const isUserFollower = async (userId: string, followId: string): Promise<boolean> => {
+	const user = await prisma.userModel.findUniqueOrThrow({
+		where: { id: followId },
+	});
+
+	const isFollower = user?.subscribers.some((subscriberId) => subscriberId === userId);
+
+	return isFollower;
+};

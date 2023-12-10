@@ -22,4 +22,5 @@ export const routes = (app: Express) => {
 		validateAuthToken,
 		userActions.api.updateAvatar
 	);
+	app.get("/user/:followId/follow", validateAuthToken, userActions.api.followUser);
 };

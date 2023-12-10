@@ -18,3 +18,7 @@ export interface UserFile {
 export interface GetUserParam {
 	userId: string;
 }
+
+export interface GetSubscribeParams {
+	followId: string;
+}
