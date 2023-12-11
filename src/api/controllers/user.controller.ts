@@ -65,7 +65,7 @@ export const userLogin = async ({
 export const userPatch = async (user: UserPatch): Promise<GetUser> => {
 	try {
 		const exist = await prisma.userModel.findUnique({ where: { username: user.username } });
-		if (exist) throw Error("Username already taken");
+		if (exist && exist.id !== user.id) throw Error("Username already taken");
 
 		const updateData: UserPatch = {} as UserPatch;
 
