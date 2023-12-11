@@ -70,8 +70,9 @@ export const userPatch = async (user: UserPatch): Promise<GetUser> => {
 
 		for (const key in user) {
 			if (Object.prototype.hasOwnProperty.call(user, key)) {
-				if (key === "id") continue;
-				updateData[key as keyof UserPatch] = user[key as keyof UserPatch];
+				if (key !== "id" && key in updateData) {
+					updateData[key as keyof UserPatch] = user[key as keyof UserPatch];
+				}
 			}
 		}
 
@@ -84,7 +85,8 @@ export const userPatch = async (user: UserPatch): Promise<GetUser> => {
 
 		return dbUser;
 	} catch (error: any) {
-		throw Error("User not exist");
+		console.log(error);
+		throw error;
 	}
 };
 
