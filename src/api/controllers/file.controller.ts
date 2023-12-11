@@ -9,7 +9,7 @@ import {
 import { firebaseConfig } from "../../configs/firebase.config";
 import { UserFile } from "../../types/requests";
 import { PrismaClient } from "@prisma/client";
-import { findUser } from "./user.controller";
+import { findUserById } from "./user.controller";
 
 initializeApp(firebaseConfig);
 const prisma = new PrismaClient();
@@ -20,6 +20,8 @@ export const videoUpload = async ({ user, file }: UserFile): Promise<string> => 
 
 	if (!file || file.mimetype.split("/")[0] !== "video" || !user)
 		throw Error("Something went wrong");
+
+	const getUser = await findUserById(user.id);
 
 	const storageRef = ref(storage, `videos/${user.username}/${file.originalname}-${dateTime}`);
 
@@ -49,7 +51,7 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 	if (!file || file.mimetype.split("/")[0] !== "image" || !user)
 		throw Error("Something went wrong");
 
-	const getUser = await findUser(user.id);
+	const getUser = await findUserById(user.id);
 
 	if (!getUser) throw Error("No user");
 
@@ -67,7 +69,7 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 				},
 			});
 		} catch (error: any) {
-			throw error;
+			console.log("File doesnt exist");
 		}
 	}
 

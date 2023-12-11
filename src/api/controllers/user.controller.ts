@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { UserRegistration, ReqUser, UserLogin } from "../../types/requests";
+import { UserRegistration, ReqUser, UserLogin, UserPatch } from "../../types/requests";
 import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
@@ -8,11 +8,20 @@ import { GetUser } from "../../types/responces";
 const prisma = new PrismaClient();
 
 export const userReg = async (user: UserRegistration): Promise<ReqUser> => {
-	const dbUser = await prisma.userModel.findUnique({
-		where: { email: user.email },
+	const dbUser = await prisma.userModel.findMany({
+		where: {
+			OR: [
+				{
+					email: user.email,
+				},
+				{
+					username: user.username,
+				},
+			],
+		},
 	});
 
-	if (dbUser) throw new Error("User already exist");
+	if (dbUser) throw new Error("User already exists");
 
 	const result = await prisma.userModel.create({
 		data: {
@@ -52,7 +61,34 @@ export const userLogin = async ({
 	}
 };
 
-export const findUser = async (userId: string): Promise<GetUser | null> => {
+export const userPatch = async (user: UserPatch): Promise<GetUser> => {
+	try {
+		const exist = await prisma.userModel.findUnique({ where: { username: user.username } });
+		if (exist) throw Error("Username already taken");
+
+		const updateData: Partial<UserPatch> = {};
+
+		for (const key in user) {
+			if (Object.prototype.hasOwnProperty.call(user, key)) {
+				if (key === "id") continue;
+				updateData[key as keyof UserPatch] = user[key as keyof UserPatch];
+			}
+		}
+
+		const dbUser = await prisma.userModel.update({
+			where: {
+				id: user.id,
+			},
+			data: updateData,
+		});
+
+		return dbUser;
+	} catch (error: any) {
+		throw Error("User not exist");
+	}
+};
+
+export const findUserById = async (userId: string): Promise<GetUser | null> => {
 	try {
 		const dbUser = await prisma.userModel.findUnique({
 			where: { id: userId },
@@ -66,7 +102,25 @@ export const findUser = async (userId: string): Promise<GetUser | null> => {
 		});
 		return dbUser;
 	} catch (e: any) {
-		throw new Error("User doesn`t exist");
+		return null;
+	}
+};
+
+export const findUserByUniqeName = async (userName: string): Promise<GetUser | null> => {
+	try {
+		const dbUser = await prisma.userModel.findUnique({
+			where: { username: userName },
+			select: {
+				id: true,
+				username: true,
+				avatarUrl: true,
+				subscribers: true,
+				subscribtions: true,
+			},
+		});
+		return dbUser;
+	} catch (e: any) {
+		return null;
 	}
 };
 

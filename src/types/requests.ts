@@ -13,6 +13,8 @@ export interface UserPassword {
 
 export interface UserLogin extends UserEmail, UserPassword {}
 
+export interface UserPatch extends ReqUser {}
+
 export interface UserRegistration extends ReqUser, UserLogin {}
 
 export interface UserFile {
@@ -21,7 +23,7 @@ export interface UserFile {
 }
 
 export interface GetUserParam {
-	userId: string;
+	userNameOrId: string;
 }
 
 export interface GetSubscribeParams {

@@ -8,16 +8,17 @@ export const routes = (app: Express) => {
 	app.post("/auth/registration", validateRegistration, userActions.api.reg);
 	app.post("/auth/login", validateLogin, userActions.api.login);
 
+	app.patch("/user/:userNameOrId/patch", validateAuthToken, userActions.api.patch);
 	app.get("/user", validateAuthToken, userActions.api.getCurrent);
-	app.get("/user/:userId", validateAuthTokenPublic, userActions.api.get);
+	app.get("/user/:userNameOrId", validateAuthTokenPublic, userActions.api.get);
 	app.post(
-		"/user/:userId/video/post",
+		"/user/video/post",
 		upload.single("file"),
 		validateAuthToken,
 		userActions.api.uploadVideo
 	);
 	app.post(
-		"/user/:userId/avatar/update",
+		"/user/avatar/update",
 		upload.single("file"),
 		validateAuthToken,
 		userActions.api.updateAvatar

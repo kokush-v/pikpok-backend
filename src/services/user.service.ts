@@ -6,6 +6,7 @@ import {
 	UserFile,
 	GetUserParam,
 	GetSubscribeParams,
+	UserPatch,
 } from "../types/requests";
 import {
 	UserRegistrationResponse,
@@ -14,11 +15,13 @@ import {
 	GetUserResponse,
 } from "../types/responces";
 import {
-	findUser,
+	findUserById,
+	findUserByUniqeName,
 	follow,
 	isUserFollower,
 	unFollow,
 	userLogin,
+	userPatch,
 	userReg,
 } from "../api/controllers/user.controller";
 import { avatarUpload, videoUpload } from "../api/controllers/file.controller";
@@ -65,15 +68,41 @@ const login = async (
 	}
 };
 
+const patch = async (
+	req: Request<GetUserParam, unknown, UserPatch>,
+	res: Response<GetUserResponse>,
+	next: NextFunction
+) => {
+	try {
+		const { userNameOrId } = req.params;
+		const user = req.body;
+		const response = await userPatch({ ...user, id: userNameOrId });
+
+		res.status(200).json({
+			data: response,
+			message: "Pikpoker edited",
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
 const get = async (
 	req: Request<GetUserParam>,
 	res: Response<GetUserResponse>,
 	next: NextFunction
 ) => {
 	try {
-		const { userId } = req.params;
+		const { userNameOrId } = req.params;
 		const reqUser = req.user;
-		const user = await findUser(userId);
+		const user =
+			(await findUserById(userNameOrId)) ||
+			(await findUserByUniqeName(userNameOrId.substring(1)));
+
+		if (!user) {
+			throw Error("User not exist");
+		}
 
 		const followed = reqUser && user ? await isUserFollower(reqUser.id, user.id) : false;
 
@@ -90,9 +119,9 @@ const getCurrent = async (req: Request, res: Response<GetUserResponse>, next: Ne
 	try {
 		const reqUser = req.user;
 
-		if (!reqUser) throw "Not authorize";
+		if (!reqUser) throw Error("Not authorize");
 
-		const user = await findUser(reqUser?.id);
+		const user = await findUserById(reqUser?.id);
 
 		res.status(200).json({
 			data: user,
@@ -128,8 +157,6 @@ const updateAvatar = async (
 	next: NextFunction
 ) => {
 	try {
-		if (req.user?.id !== req.params.userId) throw "Different accounts";
-
 		const file: UserFile = {
 			user: req.user,
 			file: req.file,
@@ -157,11 +184,11 @@ const followUser = async (
 		const { followId } = req.params;
 
 		if (currentUser?.id === followId) {
-			throw "Can't follow yourself";
+			throw Error("Can't follow yourself");
 		}
 
 		if (!currentUser) {
-			throw "Not authorized";
+			throw Error("Not authorized");
 		}
 
 		const isFollower = await isUserFollower(currentUser.id, followId);
@@ -191,6 +218,7 @@ export const userActions = {
 		reg,
 		login,
 		get,
+		patch,
 		getCurrent,
 		uploadVideo,
 		updateAvatar,
