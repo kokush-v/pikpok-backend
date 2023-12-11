@@ -54,7 +54,8 @@ export const userLogin = async ({
 
 export const findUser = async (userId: string): Promise<GetUser> => {
 
-	let dbUser;
+	try {
+		let dbUser;
 
 	if (userId.charAt(0) === "@"){
 		dbUser = await prisma.userModel.findUnique({
@@ -81,8 +82,11 @@ export const findUser = async (userId: string): Promise<GetUser> => {
 	}
 
 	if (!dbUser) throw new Error("User doesn`t exist");
-
 	return dbUser;
+	
+	} catch (e: any){
+		throw new Error("User doesn`t exist");
+	}
 };
 
 export const follow = async (userId: string, followId: string) => {
