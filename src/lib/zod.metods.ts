@@ -9,3 +9,10 @@ export function removeNullValues(obj: Record<string, any>): Record<string, any> 
 
 	return result;
 }
+
+function removeNullValuesFromArray(
+	arr: Record<string, any>[],
+	keyToRemove: string
+): Record<string, any>[] {
+	return arr.filter((obj) => obj[keyToRemove] !== null);
+}

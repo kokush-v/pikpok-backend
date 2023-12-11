@@ -225,7 +225,7 @@ const followUser = async (
 	}
 };
 
-export const userActions = {
+export const userService = {
 	api: {
 		reg,
 		login,

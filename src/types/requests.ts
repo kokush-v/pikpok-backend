@@ -37,8 +37,11 @@ export interface Post {
 	description: string;
 }
 
-export interface PostSchema extends PostType {}
-
 export interface GetSubscribeParams {
 	followId: string;
+}
+
+export interface PostReqParams {
+	limit: number;
+	page: number;
 }

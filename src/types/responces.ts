@@ -1,3 +1,4 @@
+import { PostSchema } from "../lib/zod.types";
 import { ReqUser, UserEmail } from "./requests";
 
 export interface Status {
@@ -35,4 +36,8 @@ export interface SubscribeResponse extends Status {
 				success: string;
 		  }
 		| any;
+}
+
+export interface PostResponse extends Status {
+	data: PostSchema[] | any;
 }

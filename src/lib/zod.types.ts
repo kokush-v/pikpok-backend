@@ -24,3 +24,4 @@ export const postSchema = z.object({
 });
 
 export type PostType = z.TypeOf<typeof postSchema>;
+export interface PostSchema extends PostType {}

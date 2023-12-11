@@ -45,7 +45,7 @@ model PostModel {
   creatorId   String
   url         String
   description String
-  likes       BigInt?
+  likes       Int?
   comments    String[]
-  shares      BigInt?
+  shares      Int?
 }
