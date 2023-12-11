@@ -9,6 +9,7 @@ export interface GetUser extends ReqUser {
 	avatarUrl: string;
 	subscribers: string[];
 	subscribtions: string[];
+	description?: string;
 	followed?: boolean;
 }
 

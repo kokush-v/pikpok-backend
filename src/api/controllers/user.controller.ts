@@ -8,6 +8,15 @@ import { userPatchSchema } from "../../lib/zod.types";
 
 const prisma = new PrismaClient();
 
+const userParametersToSearch = {
+	id: true,
+	username: true,
+	avatarUrl: true,
+	description: true,
+	subscribers: true,
+	subscribtions: true,
+};
+
 export const userReg = async (user: UserRegistration): Promise<ReqUser> => {
 	const dbUser = await prisma.userModel.findMany({
 		where: {
@@ -28,6 +37,7 @@ export const userReg = async (user: UserRegistration): Promise<ReqUser> => {
 		data: {
 			...user,
 			password: await hashPassword(user.password),
+			description: "",
 			avatarUrl:
 				"https://firebasestorage.googleapis.com/v0/b/pikpok-7e43d.appspot.com/o/avatars%2Fdefault-avatar.jpeg?alt=media&token=16fe35e9-f2b7-4306-ac55-5f3131c33ca6",
 		},
@@ -82,6 +92,7 @@ export const userPatch = async (user: UserPatch): Promise<GetUser> => {
 				id: user.id,
 			},
 			data: updateData,
+			select: userParametersToSearch,
 		});
 
 		return dbUser;
@@ -95,13 +106,7 @@ export const findUserById = async (userId: string): Promise<GetUser | null> => {
 	try {
 		const dbUser = await prisma.userModel.findUnique({
 			where: { id: userId },
-			select: {
-				id: true,
-				username: true,
-				avatarUrl: true,
-				subscribers: true,
-				subscribtions: true,
-			},
+			select: userParametersToSearch,
 		});
 		return dbUser;
 	} catch (e: any) {
@@ -109,17 +114,11 @@ export const findUserById = async (userId: string): Promise<GetUser | null> => {
 	}
 };
 
-export const findUserByUniqeName = async (userName: string): Promise<GetUser | null> => {
+export const findUserByUniqueName = async (userName: string): Promise<GetUser | null> => {
 	try {
 		const dbUser = await prisma.userModel.findUnique({
 			where: { username: userName },
-			select: {
-				id: true,
-				username: true,
-				avatarUrl: true,
-				subscribers: true,
-				subscribtions: true,
-			},
+			select: userParametersToSearch,
 		});
 		return dbUser;
 	} catch (e: any) {

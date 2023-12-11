@@ -16,7 +16,7 @@ import {
 } from "../types/responces";
 import {
 	findUserById,
-	findUserByUniqeName,
+	findUserByUniqueName,
 	follow,
 	isUserFollower,
 	unFollow,
@@ -98,7 +98,7 @@ const get = async (
 		const reqUser = req.user;
 		const user =
 			(await findUserById(userNameOrId)) ||
-			(await findUserByUniqeName(userNameOrId.substring(1)));
+			(await findUserByUniqueName(userNameOrId.substring(1)));
 
 		if (!user) {
 			throw Error("User not exist");
