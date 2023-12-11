@@ -4,6 +4,7 @@ import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
 import { GetUser } from "../../types/responces";
+import { userPatchSchema } from "../../lib/zod.types";
 
 const prisma = new PrismaClient();
 
@@ -66,13 +67,13 @@ export const userPatch = async (user: UserPatch): Promise<GetUser> => {
 		const exist = await prisma.userModel.findUnique({ where: { username: user.username } });
 		if (exist) throw Error("Username already taken");
 
-		const updateData: Partial<UserPatch> = {};
+		const updateData: UserPatch = {} as UserPatch;
 
-		for (const key in user) {
+		const parsedUser: UserPatch = userPatchSchema.parse(user);
+
+		for (const key in parsedUser) {
 			if (Object.prototype.hasOwnProperty.call(user, key)) {
-				if (key !== "id" && key in updateData) {
-					updateData[key as keyof UserPatch] = user[key as keyof UserPatch];
-				}
+				updateData[key as keyof UserPatch] = user[key as keyof UserPatch];
 			}
 		}
 

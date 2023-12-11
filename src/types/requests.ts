@@ -1,3 +1,5 @@
+import { UserPatchType } from "../lib/zod.types";
+
 export interface ReqUser {
 	id: string;
 	username: string;
@@ -13,7 +15,7 @@ export interface UserPassword {
 
 export interface UserLogin extends UserEmail, UserPassword {}
 
-export interface UserPatch extends ReqUser {}
+export interface UserPatch extends UserPatchType {}
 
 export interface UserRegistration extends ReqUser, UserLogin {}
 
