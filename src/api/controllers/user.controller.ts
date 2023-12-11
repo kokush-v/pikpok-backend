@@ -52,21 +52,22 @@ export const userLogin = async ({
 	}
 };
 
-export const findUser = async (userId: string): Promise<GetUser> => {
-	const dbUser = await prisma.userModel.findUnique({
-		where: { id: userId },
-		select: {
-			id: true,
-			username: true,
-			avatarUrl: true,
-			subscribers: true,
-			subscribtions: true,
-		},
-	});
-
-	if (!dbUser) throw new Error("User doesn`t exist");
-
-	return dbUser;
+export const findUser = async (userId: string): Promise<GetUser | null> => {
+	try {
+		const dbUser = await prisma.userModel.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				username: true,
+				avatarUrl: true,
+				subscribers: true,
+				subscribtions: true,
+			},
+		});
+		return dbUser;
+	} catch (e: any) {
+		throw new Error("User doesn`t exist");
+	}
 };
 
 export const follow = async (userId: string, followId: string) => {

@@ -75,7 +75,7 @@ const get = async (
 		const reqUser = req.user;
 		const user = await findUser(userId);
 
-		const followed = reqUser ? await isUserFollower(reqUser.id, user.id) : false;
+		const followed = reqUser && user ? await isUserFollower(reqUser.id, user.id) : false;
 
 		res.status(200).json({
 			data: { ...user, followed },
@@ -128,6 +128,8 @@ const updateAvatar = async (
 	next: NextFunction
 ) => {
 	try {
+		if (req.user?.id !== req.params.userId) throw "Different accounts";
+
 		const file: UserFile = {
 			user: req.user,
 			file: req.file,
