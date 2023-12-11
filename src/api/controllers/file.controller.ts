@@ -21,8 +21,6 @@ export const videoUpload = async ({ user, file }: UserFile): Promise<string> => 
 	if (!file || file.mimetype.split("/")[0] !== "video" || !user)
 		throw Error("Something went wrong");
 
-	const getUser = await findUserById(user.id);
-
 	const storageRef = ref(storage, `videos/${user.username}/${file.originalname}-${dateTime}`);
 
 	const metadata = {

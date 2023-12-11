@@ -41,9 +41,11 @@ model AvatarModel {
 }
 
 model PostModel {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  desription String
-  likes      BigInt
-  comments   BigInt
-  shares     BigInt
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  creatorId   String
+  url         String
+  description String
+  likes       BigInt?
+  comments    String[]
+  shares      BigInt?
 }

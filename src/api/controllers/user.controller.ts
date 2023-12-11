@@ -1,10 +1,20 @@
 import { PrismaClient } from "@prisma/client";
-import { UserRegistration, ReqUser, UserLogin, UserPatch } from "../../types/requests";
+import {
+	UserRegistration,
+	ReqUser,
+	UserLogin,
+	UserPatch,
+	PostReq,
+	Post,
+	PostSchema,
+} from "../../types/requests";
 import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
 import { GetUser } from "../../types/responces";
-import { userPatchSchema } from "../../lib/zod.types";
+import { postSchema, userPatchSchema } from "../../lib/zod.types";
+import { videoUpload } from "./file.controller";
+import { removeNullValues } from "../../lib/zod.metods";
 
 const prisma = new PrismaClient();
 
@@ -183,4 +193,21 @@ export const isUserFollower = async (userId: string, followId: string): Promise<
 	const isFollower = user?.subscribers.some((subscriberId) => subscriberId === userId);
 
 	return isFollower;
+};
+
+export const createPost = async ({ description, file }: Post): Promise<PostSchema> => {
+	try {
+		if (!file.user) throw Error("Not authorized");
+
+		const uploadUrl = await videoUpload(file);
+
+		const dbPost = await prisma.postModel.create({
+			data: { url: uploadUrl, description: description, creatorId: file.user.id },
+		});
+
+		return postSchema.parse(removeNullValues(dbPost));
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
 };

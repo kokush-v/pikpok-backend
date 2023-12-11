@@ -12,3 +12,15 @@ export const userPatchSchemaWithId = z
 	.merge(userPatchSchema);
 
 export type UserPatchType = z.TypeOf<typeof userPatchSchemaWithId>;
+
+export const postSchema = z.object({
+	id: z.string(),
+	creatorId: z.string(),
+	url: z.string(),
+	description: z.string(),
+	likes: z.number().nullable().default(0),
+	comments: z.string().array(),
+	shares: z.number().nullable().default(0),
+});
+
+export type PostType = z.TypeOf<typeof postSchema>;

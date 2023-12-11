@@ -15,7 +15,7 @@ export const routes = (app: Express) => {
 		"/user/video/post",
 		upload.single("file"),
 		validateAuthToken,
-		userActions.api.uploadVideo
+		userActions.api.uploadVideoPost
 	);
 	app.post(
 		"/user/avatar/update",

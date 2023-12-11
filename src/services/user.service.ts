@@ -7,6 +7,8 @@ import {
 	GetUserParam,
 	GetSubscribeParams,
 	UserPatch,
+	PostReq,
+	Post,
 } from "../types/requests";
 import {
 	UserRegistrationResponse,
@@ -15,6 +17,7 @@ import {
 	GetUserResponse,
 } from "../types/responces";
 import {
+	createPost,
 	findUserById,
 	findUserByUniqueName,
 	follow,
@@ -132,14 +135,23 @@ const getCurrent = async (req: Request, res: Response<GetUserResponse>, next: Ne
 	}
 };
 
-const uploadVideo = async (req: Request, res: Response<FileUploadResponse>, next: NextFunction) => {
+const uploadVideoPost = async (
+	req: Request<unknown, unknown, PostReq>,
+	res: Response<FileUploadResponse>,
+	next: NextFunction
+) => {
 	try {
 		const file: UserFile = {
 			user: req.user,
 			file: req.file,
 		};
 
-		const response = await videoUpload(file);
+		const post: Post = {
+			description: req.body.description,
+			file,
+		};
+
+		const response = await createPost(post);
 
 		res.status(200).json({
 			data: { fileUrl: response },
@@ -220,7 +232,7 @@ export const userActions = {
 		get,
 		patch,
 		getCurrent,
-		uploadVideo,
+		uploadVideoPost,
 		updateAvatar,
 		followUser,
 	},
