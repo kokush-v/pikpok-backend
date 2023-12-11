@@ -42,7 +42,7 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 	if (!file || file.mimetype.split("/")[0] !== "image" || !user)
 		throw Error("Something went wrong");
 
-	const storageRef = ref(storage, `avatars/${user.username}-${file.originalname}-${dateTime}`);
+	const storageRef = ref(storage, `avatars/${user.username}-${file.originalname}`);
 
 	const metadata = {
 		contentType: file.mimetype,

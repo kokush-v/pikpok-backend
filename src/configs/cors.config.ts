@@ -1,5 +1,5 @@
 export const corsConfig = {
-	origin: "http://ec2-13-53-80-251.eu-north-1.compute.amazonaws.com",
+	origin: "http://localhost",
 	credentials: true,
 	methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
 	allowedHeaders: [
