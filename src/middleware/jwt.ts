@@ -25,14 +25,13 @@ export const validateAuthToken = (req: any, res: Response, next: NextFunction) =
 	try {
 		const token = req.cookies["access-token"];
 		if (!token) {
-			res.status(403).json({ message: "Pikpoker isn`t authenticated" });
+			res.status(403).json({ error: "Pikpoker isn`t authenticated" });
 		}
 		const decodedData = verify(token, secret);
 		req.user = decodedData as ReqUser;
 		next();
 	} catch (e) {
-		console.log(e);
-		res.status(403).json({ message: "Pikpoker isn`t authenticated" });
+		res.status(403).json({ error: "Pikpoker isn`t authenticated" });
 	}
 };
 
@@ -50,7 +49,6 @@ export const validateAuthTokenPublic = (req: any, res: Response, next: NextFunct
 		req.user = decodedData as ReqUser;
 		next();
 	} catch (e) {
-		console.log(e);
-		res.status(403).json({ message: "Pikpoker isn`t authenticated" });
+		res.status(403).json({ error: "Pikpoker isn`t authenticated" });
 	}
 };
