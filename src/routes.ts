@@ -12,11 +12,12 @@ export const routes = (app: Express) => {
 	app.patch("/user/:userNameOrId/patch", validateAuthToken, userService.api.patch);
 	app.get("/user", validateAuthToken, userService.api.getCurrent);
 	app.get("/user/:userNameOrId", validateAuthTokenPublic, userService.api.get);
+	app.get("/user/:userNameOrId/posts", validateAuthTokenPublic, postService.api.getPostsByUser);
 	app.post(
 		"/user/video/post",
 		upload.single("file"),
 		validateAuthToken,
-		userService.api.uploadVideoPost
+		postService.api.uploadPost
 	);
 	app.post(
 		"/user/avatar/update",
@@ -27,4 +28,6 @@ export const routes = (app: Express) => {
 	app.get("/user/:followId/follow", validateAuthToken, userService.api.followUser);
 
 	app.get("/video/posts", validateAuthTokenPublic, postService.api.getPosts);
+	app.get("/video/post/:postId", validateAuthTokenPublic, postService.api.getPost);
+	app.get("/video/posts/:postId/like", validateAuthToken, postService.api.setLike);
 };

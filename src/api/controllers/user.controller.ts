@@ -1,13 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { UserRegistration, ReqUser, UserLogin, UserPatch, Post } from "../../types/requests";
+import { UserRegistration, ReqUser, UserLogin, UserPatch } from "../../types/requests";
 import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
 import { GetUser } from "../../types/responces";
-import { PostSchema, postSchema, userPatchSchema } from "../../lib/zod.types";
-import { videoUpload } from "./file.controller";
-import { removeNullValues } from "../../lib/zod.metods";
-
+import { userPatchSchema } from "../../lib/zod.types";
 const prisma = new PrismaClient();
 
 const userParametersToSearch = {
@@ -33,7 +30,7 @@ export const userReg = async (user: UserRegistration): Promise<ReqUser> => {
 		},
 	});
 
-	if (dbUser) throw new Error("User already exists");
+	if (dbUser.length !== 0) throw new Error("User already exists");
 
 	const result = await prisma.userModel.create({
 		data: {
@@ -119,7 +116,7 @@ export const findUserById = async (userId: string): Promise<GetUser | null> => {
 export const findUserByUniqueName = async (userName: string): Promise<GetUser | null> => {
 	try {
 		const dbUser = await prisma.userModel.findUnique({
-			where: { username: userName },
+			where: { username: userName.startsWith("@") ? userName.substring(1) : userName },
 			select: userParametersToSearch,
 		});
 		return dbUser;
@@ -128,7 +125,7 @@ export const findUserByUniqueName = async (userName: string): Promise<GetUser | 
 	}
 };
 
-export const follow = async (userId: string, followId: string) => {
+export const followUserAction = async (userId: string, followId: string) => {
 	await prisma.userModel.update({
 		where: { id: followId },
 		data: {
@@ -147,7 +144,7 @@ export const follow = async (userId: string, followId: string) => {
 		},
 	});
 };
-export const unFollow = async (userId: string, followId: string) => {
+export const unFollowUserAction = async (userId: string, followId: string) => {
 	await prisma.userModel.update({
 		where: {
 			id: followId,
@@ -185,28 +182,4 @@ export const isUserFollower = async (userId: string, followId: string): Promise<
 	const isFollower = user?.subscribers.some((subscriberId) => subscriberId === userId);
 
 	return isFollower;
-};
-
-export const createPost = async ({ description, file }: Post): Promise<PostSchema> => {
-	try {
-		if (!file.user) throw Error("Not authorized");
-
-		const uploadUrl = await videoUpload(file);
-
-		const dbPost = await prisma.postModel.create({
-			data: {
-				url: uploadUrl,
-				description: description,
-				creatorId: file.user.id,
-				comments: [],
-				likes: 0,
-				shares: 0,
-			},
-		});
-
-		return postSchema.parse(removeNullValues(dbPost));
-	} catch (error) {
-		console.log(error);
-		throw error;
-	}
 };

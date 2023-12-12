@@ -20,12 +20,16 @@ export interface UserPatch extends UserPatchType {}
 export interface UserRegistration extends ReqUser, UserLogin {}
 
 export interface UserFile {
-	user: ReqUser | undefined;
+	user: ReqUser;
 	file: Express.Multer.File | undefined;
 }
 
 export interface GetUserParam {
 	userNameOrId: string;
+}
+
+export interface GetPostParam {
+	postId: string;
 }
 
 export interface PostReq {

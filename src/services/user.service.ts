@@ -17,17 +17,17 @@ import {
 	GetUserResponse,
 } from "../types/responces";
 import {
-	createPost,
 	findUserById,
 	findUserByUniqueName,
-	follow,
+	followUserAction,
 	isUserFollower,
-	unFollow,
+	unFollowUserAction,
 	userLogin,
 	userPatch,
 	userReg,
 } from "../api/controllers/user.controller";
 import { avatarUpload, videoUpload } from "../api/controllers/file.controller";
+import { createPost } from "../api/controllers/post.controllers";
 
 const reg = async (
 	req: Request<unknown, unknown, UserRegistration>,
@@ -99,9 +99,7 @@ const get = async (
 	try {
 		const { userNameOrId } = req.params;
 		const reqUser = req.user;
-		const user =
-			(await findUserById(userNameOrId)) ||
-			(await findUserByUniqueName(userNameOrId.substring(1)));
+		const user = (await findUserById(userNameOrId)) || (await findUserByUniqueName(userNameOrId));
 
 		if (!user) {
 			throw Error("User not exist");
@@ -124,38 +122,10 @@ const getCurrent = async (req: Request, res: Response<GetUserResponse>, next: Ne
 
 		if (!reqUser) throw Error("Not authorize");
 
-		const user = await findUserById(reqUser?.id);
+		const user = await findUserById(reqUser.id);
 
 		res.status(200).json({
 			data: user,
-			status: 200,
-		});
-	} catch (error: any) {
-		res.status(400).json({ data: { error: error.message }, status: 400 });
-	}
-};
-
-const uploadVideoPost = async (
-	req: Request<unknown, unknown, PostReq>,
-	res: Response<FileUploadResponse>,
-	next: NextFunction
-) => {
-	try {
-		const file: UserFile = {
-			user: req.user,
-			file: req.file,
-		};
-
-		const post: Post = {
-			description: req.body.description,
-			file,
-		};
-
-		const response = await createPost(post);
-
-		res.status(200).json({
-			data: { fileUrl: response },
-			message: "Video was uploaded",
 			status: 200,
 		});
 	} catch (error: any) {
@@ -169,6 +139,8 @@ const updateAvatar = async (
 	next: NextFunction
 ) => {
 	try {
+		if (!req.user) throw Error("Not authorize");
+
 		const file: UserFile = {
 			user: req.user,
 			file: req.file,
@@ -207,10 +179,10 @@ const followUser = async (
 		let message = "User followed";
 
 		if (isFollower) {
-			unFollow(currentUser.id, followId);
+			followUserAction(currentUser.id, followId);
 			message = "User unfollowed";
 		} else {
-			follow(currentUser.id, followId);
+			unFollowUserAction(currentUser.id, followId);
 		}
 
 		res.status(200).json({
@@ -232,7 +204,6 @@ export const userService = {
 		get,
 		patch,
 		getCurrent,
-		uploadVideoPost,
 		updateAvatar,
 		followUser,
 	},

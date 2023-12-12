@@ -18,7 +18,7 @@ export const postSchema = z.object({
 	creatorId: z.string(),
 	url: z.string(),
 	description: z.string(),
-	likes: z.number().nullable().default(0),
+	likes: z.string().array(),
 	comments: z.string().array(),
 	shares: z.number().nullable().default(0),
 });

@@ -10,6 +10,7 @@ import { firebaseConfig } from "../../configs/firebase.config";
 import { UserFile } from "../../types/requests";
 import { PrismaClient } from "@prisma/client";
 import { findUserById } from "./user.controller";
+import { convertToReadableDate } from "../../common";
 
 initializeApp(firebaseConfig);
 const prisma = new PrismaClient();
@@ -21,7 +22,11 @@ export const videoUpload = async ({ user, file }: UserFile): Promise<string> => 
 	if (!file || file.mimetype.split("/")[0] !== "video" || !user)
 		throw Error("Something went wrong");
 
-	const storageRef = ref(storage, `videos/${user.username}/${file.originalname}-${dateTime}`);
+	const fileName = `${user.username}-${file.originalname}-${convertToReadableDate(
+		dateTime
+	)}`.replaceAll("/", "-");
+
+	const storageRef = ref(storage, `videos/${user.id}/${fileName}`);
 
 	const metadata = {
 		contentType: file.mimetype,
@@ -71,7 +76,11 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 		}
 	}
 
-	const storageRef = ref(storage, `avatars/${user.username}-${file.originalname}-${dateTime}`);
+	const fileName = `${user.username}-${file.originalname}-${convertToReadableDate(
+		dateTime
+	)}`.replaceAll("/", "-");
+
+	const storageRef = ref(storage, `avatars/${fileName}`);
 
 	const metadata = {
 		contentType: file.mimetype,

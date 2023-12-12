@@ -38,6 +38,10 @@ export interface SubscribeResponse extends Status {
 		| any;
 }
 
-export interface PostResponse extends Status {
+export interface PostsResponse extends Status {
 	data: PostSchema[] | any;
+}
+
+export interface PostResponse extends Status {
+	data: PostSchema | any;
 }
