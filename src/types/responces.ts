@@ -1,5 +1,5 @@
-import { PostSchema } from "../lib/zod.types";
 import { ReqUser, UserEmail } from "./requests";
+import { PostSchema } from "./zod/post.shema";
 
 export interface Status {
 	status: string | number;

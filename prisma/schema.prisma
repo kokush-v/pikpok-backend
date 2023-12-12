@@ -49,3 +49,9 @@ model PostModel {
   comments    String[]
   shares      Int?
 }
+
+model CommentModel {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  creatorId String
+  text      String
+}

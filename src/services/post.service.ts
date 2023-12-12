@@ -3,6 +3,8 @@ import {
 	GetPostParam,
 	GetUserParam,
 	Post,
+	PostComment,
+	PostCommentDeleteParams,
 	PostReq,
 	PostReqParams,
 	UserFile,
@@ -16,8 +18,11 @@ import {
 	getVideoPosts,
 	isLikedPost,
 	likePost,
+	removeComment,
+	sendComment,
 } from "../api/controllers/post.controllers";
 import { findUserById, findUserByUniqueName } from "../api/controllers/user.controller";
+import { CommentSchema } from "../types/zod/post.shema";
 
 const getPosts = async (
 	req: Request<PostReqParams>,
@@ -120,12 +125,61 @@ const setLike = async (
 		const user = req.user;
 		if (!user) throw Error("Not authorized");
 
-		const likedPost = (await isLikedPost(postId, user.id))
+		const post = (await isLikedPost(postId, user.id))
 			? await dislikePost(postId, user.id)
 			: await likePost(postId, user.id);
 
 		res.status(200).json({
-			data: likedPost,
+			data: post,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
+const setComment = async (
+	req: Request<GetPostParam, unknown, PostComment>,
+	res: Response<PostResponse>,
+	next: NextFunction
+) => {
+	try {
+		const { postId } = req.params;
+		const user = req.user;
+		const { text } = req.body;
+
+		if (!user) throw Error("Not authorized");
+
+		const comment: CommentSchema = {
+			creatorId: user.id,
+			text: text,
+		};
+
+		const post = await sendComment(postId, comment);
+		res.status(200).json({
+			data: post,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
+const deleteComment = async (
+	req: Request<PostCommentDeleteParams>,
+	res: Response<PostResponse>,
+	next: NextFunction
+) => {
+	try {
+		const { postId, commentId } = req.params;
+		const user = req.user;
+
+		if (!user) throw Error("Not authorized");
+
+		const post = await removeComment(postId, commentId);
+
+		res.status(200).json({
+			data: post,
 			status: 200,
 		});
 	} catch (error: any) {
@@ -140,5 +194,7 @@ export const postService = {
 		getPostsByUser,
 		setLike,
 		getPost,
+		setComment,
+		deleteComment,
 	},
 };

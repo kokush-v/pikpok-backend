@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { PostSchema, postSchema } from "../../lib/zod.types";
 import { Post } from "../../types/requests";
 import { videoUpload } from "./file.controller";
 import { removeNullValues } from "../../lib/zod.metods";
 import { GetUser } from "../../types/responces";
+import { CommentSchema, PostSchema, postSchema } from "../../types/zod/post.shema";
 
 const prisma = new PrismaClient();
 
@@ -85,4 +85,44 @@ export const isLikedPost = async (postId: string, userId: string): Promise<Boole
 	const isLiked = post?.likes.some((likeId) => likeId === userId);
 
 	return isLiked;
+};
+
+export const sendComment = async (postId: string, comment: CommentSchema): Promise<PostSchema> => {
+	const dbComment = await prisma.commentModel.create({
+		data: comment,
+	});
+
+	return await prisma.postModel.update({
+		where: {
+			id: postId,
+		},
+		data: {
+			comments: {
+				push: dbComment.id,
+			},
+		},
+	});
+};
+
+export const removeComment = async (postId: string, commentId: string): Promise<PostSchema> => {
+	prisma.commentModel.delete({
+		where: {
+			id: commentId,
+		},
+	});
+
+	return await prisma.postModel.update({
+		where: {
+			id: postId,
+		},
+		data: {
+			comments: {
+				set: await prisma.postModel
+					.findUnique({ where: { id: postId } })
+					.then((post) =>
+						post?.comments.filter((deleteCommentId) => deleteCommentId !== commentId)
+					),
+			},
+		},
+	});
 };

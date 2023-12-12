@@ -4,7 +4,7 @@ import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
 import { GetUser } from "../../types/responces";
-import { userPatchSchema } from "../../lib/zod.types";
+import { userPatchSchema } from "../../types/zod/user.shema";
 const prisma = new PrismaClient();
 
 const userParametersToSearch = {

@@ -1,4 +1,4 @@
-import { PostType, UserPatchType } from "../lib/zod.types";
+import { UserPatchType } from "./zod/user.shema";
 
 export interface ReqUser {
 	id: string;
@@ -48,4 +48,12 @@ export interface GetSubscribeParams {
 export interface PostReqParams {
 	limit: number;
 	page: number;
+}
+
+export interface PostComment {
+	text: string;
+}
+
+export interface PostCommentDeleteParams extends GetPostParam {
+	commentId: string;
 }

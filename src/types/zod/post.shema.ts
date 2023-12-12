@@ -1,18 +1,5 @@
 import { z } from "zod";
 
-export const userPatchSchema = z.object({
-	username: z.string().min(1).max(15).optional(),
-	description: z.string().trim().max(50).optional(),
-});
-
-export const userPatchSchemaWithId = z
-	.object({
-		id: z.string().optional(),
-	})
-	.merge(userPatchSchema);
-
-export type UserPatchType = z.TypeOf<typeof userPatchSchemaWithId>;
-
 export const postSchema = z.object({
 	id: z.string(),
 	creatorId: z.string(),
@@ -25,3 +12,12 @@ export const postSchema = z.object({
 
 export type PostType = z.TypeOf<typeof postSchema>;
 export interface PostSchema extends PostType {}
+
+export const postCommentSchema = z.object({
+	id: z.string().optional(),
+	creatorId: z.string(),
+	text: z.string().trim(),
+});
+
+export type CommentType = z.TypeOf<typeof postCommentSchema>;
+export interface CommentSchema extends CommentType {}
