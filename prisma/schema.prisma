@@ -53,5 +53,6 @@ model PostModel {
 model CommentModel {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   creatorId String
+  postId    String
   text      String
 }

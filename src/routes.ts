@@ -30,6 +30,7 @@ export const routes = (app: Express) => {
 	app.get("/video/posts", validateAuthTokenPublic, postService.api.getPosts);
 	app.get("/video/post/:postId", validateAuthTokenPublic, postService.api.getPost);
 	app.get("/video/posts/:postId/like", validateAuthToken, postService.api.setLike);
+	app.get("/video/posts/:postId/comments", validateAuthToken, postService.api.getCommentsByPostId);
 	app.post("/video/posts/:postId/comment", validateAuthToken, postService.api.setComment);
 	app.delete(
 		"/video/posts/:postId/comment/:commentId",

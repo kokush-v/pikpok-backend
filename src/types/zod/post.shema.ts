@@ -13,11 +13,20 @@ export const postSchema = z.object({
 export type PostType = z.TypeOf<typeof postSchema>;
 export interface PostSchema extends PostType {}
 
-export const postCommentSchema = z.object({
+export const postComment = z.object({
 	id: z.string().optional(),
 	creatorId: z.string(),
 	text: z.string().trim(),
 });
 
-export type CommentType = z.TypeOf<typeof postCommentSchema>;
-export interface CommentSchema extends CommentType {}
+export const postCommentSchemaPostId = z.object({
+	postId: z.string(),
+});
+
+export const postCommentSchema = postComment.merge(postCommentSchemaPostId);
+
+export type CommentType = z.TypeOf<typeof postComment>;
+export type CommentShemaType = z.TypeOf<typeof postCommentSchema>;
+
+export interface Comment extends CommentType {}
+export interface CommentSchema extends CommentShemaType {}

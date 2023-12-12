@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { Post } from "../../types/requests";
+import { Post, PostComment } from "../../types/requests";
 import { videoUpload } from "./file.controller";
 import { removeNullValues } from "../../lib/zod.metods";
 import { GetUser } from "../../types/responces";
-import { CommentSchema, PostSchema, postSchema } from "../../types/zod/post.shema";
+import { Comment, CommentSchema, PostSchema, postSchema } from "../../types/zod/post.shema";
 
 const prisma = new PrismaClient();
 
@@ -123,6 +123,17 @@ export const removeComment = async (postId: string, commentId: string): Promise<
 						post?.comments.filter((deleteCommentId) => deleteCommentId !== commentId)
 					),
 			},
+		},
+	});
+};
+
+export const getPostComments = async (postId: string): Promise<Comment[]> => {
+	return await prisma.commentModel.findMany({
+		where: { postId },
+		select: {
+			id: true,
+			creatorId: true,
+			text: true,
 		},
 	});
 };

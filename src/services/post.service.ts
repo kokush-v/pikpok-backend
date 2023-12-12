@@ -14,6 +14,7 @@ import {
 	createPost,
 	dislikePost,
 	findPostById,
+	getPostComments,
 	getUserVideoPosts,
 	getVideoPosts,
 	isLikedPost,
@@ -153,6 +154,7 @@ const setComment = async (
 		const comment: CommentSchema = {
 			creatorId: user.id,
 			text: text,
+			postId,
 		};
 
 		const post = await sendComment(postId, comment);
@@ -187,6 +189,25 @@ const deleteComment = async (
 	}
 };
 
+const getCommentsByPostId = async (
+	req: Request<GetPostParam>,
+	res: Response<PostResponse>,
+	next: NextFunction
+) => {
+	try {
+		const { postId } = req.params;
+
+		const comments = await getPostComments(postId);
+
+		res.status(200).json({
+			data: comments,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
 export const postService = {
 	api: {
 		getPosts,
@@ -196,5 +217,6 @@ export const postService = {
 		getPost,
 		setComment,
 		deleteComment,
+		getCommentsByPostId,
 	},
 };

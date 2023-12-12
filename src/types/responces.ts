@@ -1,5 +1,5 @@
 import { ReqUser, UserEmail } from "./requests";
-import { PostSchema } from "./zod/post.shema";
+import { CommentSchema, PostSchema } from "./zod/post.shema";
 
 export interface Status {
 	status: string | number;
@@ -44,4 +44,8 @@ export interface PostsResponse extends Status {
 
 export interface PostResponse extends Status {
 	data: PostSchema | any;
+}
+
+export interface CommentsResponse extends Status {
+	data: CommentSchema;
 }
