@@ -179,10 +179,10 @@ const followUser = async (
 		let message = "User followed";
 
 		if (isFollower) {
-			followUserAction(currentUser.id, followId);
+			unFollowUserAction(currentUser.id, followId);
 			message = "User unfollowed";
 		} else {
-			unFollowUserAction(currentUser.id, followId);
+			followUserAction(currentUser.id, followId);
 		}
 
 		res.status(200).json({
