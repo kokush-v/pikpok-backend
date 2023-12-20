@@ -49,3 +49,7 @@ export interface PostResponse extends Status {
 export interface CommentsResponse extends Status {
 	data: CommentSchema;
 }
+
+export interface RoomResponse extends Status {
+	data: string | any;
+}

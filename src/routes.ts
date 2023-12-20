@@ -4,6 +4,7 @@ import { validateLogin, validateRegistration } from "./middleware/validator";
 import { validateAuthToken, validateAuthTokenPublic } from "./middleware/jwt";
 import { upload } from "./middleware/firebase";
 import { postService } from "./services/post.service";
+import { chatService } from "./services/chat.service";
 
 export const routes = (app: Express) => {
 	app.post("/auth/registration", validateRegistration, userService.api.reg);
@@ -41,4 +42,5 @@ export const routes = (app: Express) => {
 		validateAuthToken,
 		postService.api.deleteComment
 	);
+	app.put("/chat/create", validateAuthToken, chatService.api.createRoom);
 };

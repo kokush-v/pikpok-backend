@@ -59,7 +59,7 @@ export interface PostCommentDeleteParams extends GetPostParam {
 	commentId: string;
 }
 
-export interface RoomReqParams {
+export interface RoomReqQuery {
 	sender: string;
 	receiver: string;
 }

@@ -4,7 +4,11 @@ export function convertToReadableDate(date: Date): string {
 }
 
 export const sortUserId = (idArr: string[]) => {
-	return idArr.sort((a: string, b: string) => {
+	function compareHexStrings(a: string, b: string) {
 		return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
-	});
+	}
+
+	const sortedIds = idArr.sort(compareHexStrings);
+
+	return sortedIds;
 };
