@@ -105,7 +105,7 @@ export const sendComment = async (postId: string, comment: CommentSchema): Promi
 };
 
 export const removeComment = async (postId: string, commentId: string): Promise<PostSchema> => {
-	prisma.commentModel.delete({
+	await prisma.commentModel.delete({
 		where: {
 			id: commentId,
 		},

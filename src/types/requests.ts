@@ -1,3 +1,4 @@
+import { ParsedUrlQuery } from "querystring";
 import { UserPatchType } from "./zod/user.shema";
 
 export interface ReqUser {
@@ -56,4 +57,9 @@ export interface PostComment {
 
 export interface PostCommentDeleteParams extends GetPostParam {
 	commentId: string;
+}
+
+export interface RoomReqParams {
+	sender: string;
+	receiver: string;
 }
