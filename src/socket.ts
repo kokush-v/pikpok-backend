@@ -5,7 +5,12 @@ import { saveMessage } from "./api/controllers/chat.controller";
 import { Message } from "./types/zod/message.schema";
 
 export const httpServer = createServer(app);
-const io = new Server(httpServer, {});
+const io = new Server(httpServer, {
+	cors: {
+		origin: "http://localhost:80",
+		methods: ["GET", "POST"],
+	},
+});
 
 io.on("connection", async (socket) => {
 	const { room } = socket.handshake.query as { room: string };
