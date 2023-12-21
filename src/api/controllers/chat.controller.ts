@@ -44,9 +44,8 @@ export const createChatRoom = async (sender: string, receiver: string) => {
 		});
 		return room;
 	} catch (error) {
-		throw error;
-	} finally {
 		await client.close();
+		throw error;
 	}
 };
 
