@@ -24,19 +24,23 @@ io.on("connection", async (socket) => {
 		});
 
 		socket.on("message", async (message: Message) => {
-			const room = Array.from(socket.rooms).filter((room) => room !== socket.id)[0];
-			const dbMesasge = await saveMessage(room, message);
-			const user = await findUserById(message.userId);
+			try {
+				const room = Array.from(socket.rooms).filter((room) => room !== socket.id)[0];
+				const dbMesasge = await saveMessage(room, message);
+				const user = await findUserById(message.userId);
 
-			if (!user || !dbMesasge) throw Error("Bad request");
+				if (!user || !dbMesasge) throw Error("Bad request");
 
-			const msg = {
-				user: { name: user.username, avatar: user.avatarUrl },
-				id: dbMesasge.messageId,
-				text: dbMesasge.text,
-			};
+				const msg = {
+					user: { name: user.username, avatar: user.avatarUrl },
+					id: dbMesasge.messageId,
+					text: dbMesasge.text,
+				};
 
-			socket.emit("message", msg);
+				socket.emit("message", msg);
+			} catch (error) {
+				console.log(error);
+			}
 		});
 
 		socket.on("disconnect", () => {});
