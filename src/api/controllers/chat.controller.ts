@@ -19,6 +19,14 @@ export const createChatRoom = async (sender: string, receiver: string) => {
 	try {
 		await client.connect();
 		const database = client.db("pikpok_chat");
+
+		const collection = database.collection(room);
+
+		if (collection) {
+			await client.close();
+			return room;
+		}
+
 		await database.createCollection(room);
 
 		await prisma.userModel.updateMany({
@@ -34,6 +42,9 @@ export const createChatRoom = async (sender: string, receiver: string) => {
 				chats: { push: room },
 			},
 		});
+		return room;
+	} catch (error) {
+		throw error;
 	} finally {
 		await client.close();
 	}
