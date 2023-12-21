@@ -10,7 +10,7 @@ export const globalUserSearch = async (query: string): Promise<GetUser[] | null>
 		const users = await prisma.userModel.findMany({
 			where: {
 				username: {
-					startsWith: query,
+					contains: query,
 					mode: "insensitive",
 				},
 			},
@@ -28,7 +28,7 @@ export const globalPostsSearch = async (query: string): Promise<PostSchema[] | n
 		const posts = await prisma.postModel.findMany({
 			where: {
 				description: {
-					startsWith: query,
+					contains: query,
 					mode: "insensitive",
 				},
 			},
