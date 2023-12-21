@@ -4,6 +4,7 @@ import { ChatParams, RoomReqQuery } from "../types/requests";
 import { createChatRoom, getChatById } from "../api/controllers/chat.controller";
 import { ChatResponse, RoomResponse } from "../types/responces";
 import { Chat } from "../types/zod/chat.schema";
+import { findUserById } from "../api/controllers/user.controller";
 
 const createRoom = async (
 	req: Request<any, any, any, RoomReqQuery>,
@@ -34,9 +35,22 @@ const findChat = async (
 	try {
 		const { chatId } = req.params;
 
-		const messages = await getChatById(chatId);
+		const dbMessages = await getChatById(chatId);
 
-		const data: Chat = { chatId: chatId, messages };
+		const messages = await Promise.all(
+			dbMessages.map(async (message) => {
+				const user = await findUserById(message.userId);
+
+				if (!user) throw "No user";
+
+				return { ...message, user: { name: user.username, avatar: user.avatarUrl } };
+			})
+		);
+
+		const data: Chat = {
+			chatId: chatId,
+			messages: messages,
+		};
 
 		res.status(200).json({
 			data,

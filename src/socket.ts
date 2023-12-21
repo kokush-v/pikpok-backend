@@ -3,6 +3,7 @@ import { app } from "./server";
 import { Server } from "socket.io";
 import { saveMessage } from "./api/controllers/chat.controller";
 import { Message } from "./types/zod/message.schema";
+import { findUserById } from "./api/controllers/user.controller";
 
 export const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -22,9 +23,18 @@ io.on("connection", async (socket) => {
 	});
 
 	socket.on("message", async (message: Message) => {
-		const room = Object.keys(socket.rooms).filter((room) => room !== socket.id)[0];
-		const msg = await saveMessage(room, message);
-		console.log(socket.rooms);
+		const room = Array.from(socket.rooms).filter((room) => room !== socket.id)[0];
+		const dbMesasge = await saveMessage(room, message);
+		const user = await findUserById(message.userId);
+
+		if (!user || !dbMesasge) throw Error("Bad request");
+
+		const msg = {
+			user: { name: user.username, avatar: user.avatarUrl },
+			id: dbMesasge.messageId,
+			text: dbMesasge.text,
+		};
+
 		socket.emit("message", msg);
 	});
 
