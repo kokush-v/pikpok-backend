@@ -7,7 +7,7 @@ import { GetUser } from "../../types/responces";
 import { userPatchSchema } from "../../types/zod/user.shema";
 const prisma = new PrismaClient();
 
-const userParametersToSearch = {
+export const userParametersToSearch = {
 	id: true,
 	username: true,
 	avatarUrl: true,

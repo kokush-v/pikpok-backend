@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { SearchQuery } from "../types/requests";
 import { SearchResponse } from "../types/responces";
-import { globalSearch } from "../api/controllers/search.controller";
+import { globalPostsSearch, globalUserSearch } from "../api/controllers/search.controller";
 
 const search = async (
 	req: Request<any, any, any, SearchQuery>,
@@ -9,9 +9,14 @@ const search = async (
 	next: NextFunction
 ) => {
 	try {
-		const { q } = req.query;
+		const { q, type } = req.query;
 
-		const data = await globalSearch(q);
+		const searchTypes = {
+			users: async (q: string) => await globalUserSearch(q),
+			posts: async (q: string) => await globalPostsSearch(q),
+		};
+
+		const data = await searchTypes[type](q);
 
 		res.status(200).json({
 			data,

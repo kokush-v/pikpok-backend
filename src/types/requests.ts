@@ -70,4 +70,5 @@ export interface ChatParams {
 
 export interface SearchQuery {
 	q: string;
+	type: "posts" | "users";
 }
