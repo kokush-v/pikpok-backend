@@ -67,3 +67,12 @@ export interface RoomResponse extends Status {
 export interface ChatResponse extends Status {
 	data: Chat | any;
 }
+
+export interface SearchResponse extends Status {
+	data:
+		| {
+				users: GetUser[];
+				posts: PostSchema[];
+		  }
+		| any;
+}

@@ -67,3 +67,7 @@ export interface RoomReqQuery {
 export interface ChatParams {
 	chatId: string;
 }
+
+export interface SearchQuery {
+	q: string;
+}
