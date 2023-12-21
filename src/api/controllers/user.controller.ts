@@ -14,6 +14,7 @@ const userParametersToSearch = {
 	description: true,
 	subscribers: true,
 	subscribtions: true,
+	chats: true,
 };
 
 export const userReg = async (user: UserRegistration): Promise<ReqUser> => {

@@ -43,4 +43,5 @@ export const routes = (app: Express) => {
 		postService.api.deleteComment
 	);
 	app.put("/chat/create", validateAuthToken, chatService.api.createRoom);
+	app.get("/chat/:chatId", validateAuthToken, chatService.api.findChat);
 };

@@ -15,6 +15,9 @@ import {
 	FileUploadResponse,
 	SubscribeResponse,
 	GetUserResponse,
+	GetCurrentUserResponse,
+	GetUser,
+	GetCurrentUser,
 } from "../types/responces";
 import {
 	findUserById,
@@ -99,11 +102,12 @@ const get = async (
 	try {
 		const { userNameOrId } = req.params;
 		const reqUser = req.user;
-		const user = (await findUserById(userNameOrId)) || (await findUserByUniqueName(userNameOrId));
+		const data = (await findUserById(userNameOrId)) || (await findUserByUniqueName(userNameOrId));
 
-		if (!user) {
+		if (!data) {
 			throw Error("User not exist");
 		}
+		const { chats, ...user } = data as GetCurrentUser;
 
 		const followed = reqUser && user ? await isUserFollower(reqUser.id, user.id) : false;
 
@@ -116,7 +120,11 @@ const get = async (
 	}
 };
 
-const getCurrent = async (req: Request, res: Response<GetUserResponse>, next: NextFunction) => {
+const getCurrent = async (
+	req: Request,
+	res: Response<GetCurrentUserResponse>,
+	next: NextFunction
+) => {
 	try {
 		const reqUser = req.user;
 

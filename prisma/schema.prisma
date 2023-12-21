@@ -22,6 +22,7 @@ model UserModel {
   avatarUrl     String
   subscribers   String[]
   subscribtions String[]
+  chats         String[]
 }
 
 model VideoModel {

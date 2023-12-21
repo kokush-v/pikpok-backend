@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(logger("dev"));
 routes(app);
 
-httpServer.listen(3001, () => {
+httpServer.listen(socketPort, () => {
 	console.log(`⚡️[socket.io]: Socket is running at http://localhost:${socketPort}`);
 });
 app.listen(port, () => {

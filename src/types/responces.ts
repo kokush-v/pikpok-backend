@@ -1,4 +1,6 @@
 import { ReqUser, UserEmail } from "./requests";
+import { Chat } from "./zod/chat.schema";
+import { Message } from "./zod/message.schema";
 import { CommentSchema, PostSchema } from "./zod/post.shema";
 
 export interface Status {
@@ -14,12 +16,20 @@ export interface GetUser extends ReqUser {
 	followed?: boolean;
 }
 
+export interface GetCurrentUser extends GetUser {
+	chats: string[];
+}
+
 export interface UserRegistrationResponse extends Status {
 	data: ReqUser | any;
 }
 
 export interface GetUserResponse extends Status {
 	data: GetUser | any;
+}
+
+export interface GetCurrentUserResponse extends Status {
+	data: GetCurrentUser | any;
 }
 
 export interface FileUploadResponse extends Status {
@@ -52,4 +62,8 @@ export interface CommentsResponse extends Status {
 
 export interface RoomResponse extends Status {
 	data: string | any;
+}
+
+export interface ChatResponse extends Status {
+	data: Chat | any;
 }
