@@ -13,14 +13,18 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", async (socket) => {
-	const { room } = socket.handshake.query as { room: string };
+	socket.on("changeRoom", async (room) => {
+		for (const room of socket.rooms) {
+			if (room !== socket.id) socket.leave(room);
+		}
 
-	if (!room) return;
-
-	socket.join(room);
+		socket.join(room);
+	});
 
 	socket.on("message", async (message: Message) => {
+		const room = Object.keys(socket.rooms).filter((room) => room !== socket.id)[0];
 		const msg = await saveMessage(room, message);
+		console.log(socket.rooms);
 		socket.emit("message", msg);
 	});
 
