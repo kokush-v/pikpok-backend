@@ -8,7 +8,7 @@ import { findUserById } from "./api/controllers/user.controller";
 export const httpServer = createServer(app);
 const io = new Server(httpServer, {
 	cors: {
-		origin: "http://localhost:80",
+		origin: "http://localhost",
 		methods: ["GET", "POST"],
 	},
 });
