@@ -37,7 +37,7 @@ io.on("connection", async (socket) => {
 					text: dbMesasge.text,
 				};
 
-				socket.emit("message", msg);
+				socket.to(room).emit("message", msg);
 			} catch (error) {
 				console.log(error);
 			}
