@@ -6,6 +6,7 @@ import { upload } from "./middleware/firebase";
 import { postService } from "./services/post.service";
 import { chatService } from "./services/chat.service";
 import { searchService } from "./services/search.service";
+import { isAdmin } from "./middleware/admin";
 
 export const routes = (app: Express) => {
 	app.post("/auth/registration", validateRegistration, userService.api.reg);
@@ -43,6 +44,8 @@ export const routes = (app: Express) => {
 		validateAuthToken,
 		postService.api.deleteComment
 	);
+	app.delete("/video/posts/:postId", validateAuthToken, isAdmin, postService.api.deletePost);
+
 	app.put("/chat/create", validateAuthToken, chatService.api.createRoom);
 	app.get("/chat/:chatId", validateAuthToken, chatService.api.findChat);
 	app.get("/search", validateAuthTokenPublic, searchService.api.search);

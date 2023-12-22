@@ -18,6 +18,7 @@ export interface GetUser extends ReqUser {
 
 export interface GetCurrentUser extends GetUser {
 	chats: string[];
+	isAdmin: boolean;
 }
 
 export interface UserRegistrationResponse extends Status {

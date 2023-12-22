@@ -12,6 +12,7 @@ import {
 import { FileUploadResponse, PostResponse, PostsResponse } from "../types/responces";
 import {
 	createPost,
+	deletePostById,
 	dislikePost,
 	findPostById,
 	getPostComments,
@@ -109,6 +110,21 @@ const getPost = async (
 
 		res.status(200).json({
 			data: post,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
+const deletePost = async (req: Request<GetPostParam>, res: Response, next: NextFunction) => {
+	try {
+		const { postId } = req.params;
+
+		await deletePostById(postId);
+
+		res.status(200).json({
+			message: `Post with id:${postId} deleted`,
 			status: 200,
 		});
 	} catch (error: any) {
@@ -218,5 +234,6 @@ export const postService = {
 		setComment,
 		deleteComment,
 		getCommentsByPostId,
+		deletePost,
 	},
 };

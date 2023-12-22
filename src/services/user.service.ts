@@ -31,6 +31,7 @@ import {
 } from "../api/controllers/user.controller";
 import { avatarUpload, videoUpload } from "../api/controllers/file.controller";
 import { createPost } from "../api/controllers/post.controllers";
+import { searchAdmin } from "../api/controllers/role.contoller";
 
 const reg = async (
 	req: Request<unknown, unknown, UserRegistration>,
@@ -131,9 +132,10 @@ const getCurrent = async (
 		if (!reqUser) throw Error("Not authorize");
 
 		const user = await findUserById(reqUser.id);
+		const isAdmin = await searchAdmin(reqUser.id);
 
 		res.status(200).json({
-			data: user,
+			data: { ...user, isAdmin },
 			status: 200,
 		});
 	} catch (error: any) {

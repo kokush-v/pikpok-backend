@@ -109,3 +109,28 @@ export const avatarUpload = async ({ user, file }: UserFile): Promise<string> =>
 
 	return dbResponse.downloadUrl;
 };
+
+export const videoDelete = async (url: string) => {
+	const deleteRef = ref(storage, url);
+	const post = await prisma.postModel.findMany({
+		where: {
+			url,
+		},
+	});
+
+	try {
+		await deleteObject(deleteRef);
+		await prisma.postModel.delete({
+			where: {
+				id: post[0].id,
+			},
+		});
+		await prisma.videoModel.delete({
+			where: {
+				downloadUrl: url,
+			},
+		});
+	} catch (error: any) {
+		console.log("File doesnt exist");
+	}
+};

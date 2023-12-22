@@ -51,6 +51,14 @@ export const findPostById = async (postId: string): Promise<PostSchema> => {
 	});
 };
 
+export const deletePostById = async (postId: string) => {
+	await prisma.postModel.delete({
+		where: {
+			id: postId,
+		},
+	});
+};
+
 export const likePost = async (postId: string, userId: string): Promise<PostSchema> =>
 	await prisma.postModel.update({
 		where: {
