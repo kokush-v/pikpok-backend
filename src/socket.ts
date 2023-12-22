@@ -26,15 +26,15 @@ io.on("connection", async (socket) => {
 		socket.on("message", async (message: Message) => {
 			try {
 				const room = Array.from(socket.rooms).filter((room) => room !== socket.id)[0];
-				const dbMesasge = await saveMessage(room, message);
+				const dbMessage = await saveMessage(room, message);
 				const user = await findUserById(message.userId);
 
-				if (!user || !dbMesasge) throw Error("Bad request");
+				if (!user || !dbMessage) throw Error("Bad request");
 
 				const msg = {
 					user: { name: user.username, avatar: user.avatarUrl },
-					id: dbMesasge.messageId,
-					text: dbMesasge.text,
+					id: dbMessage.messageId,
+					text: dbMessage.text,
 				};
 
 				io.to(room).emit("message", msg);

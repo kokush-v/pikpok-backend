@@ -62,8 +62,9 @@ export const saveMessage = async (room: string, message: Message): Promise<Messa
 		return { messageId: insertedId.toString(), userId: message.userId, text: message.text };
 	} catch (error) {
 		console.log(error);
-		await client.close();
 		return null;
+	} finally {
+		await client.close();
 	}
 };
 
@@ -80,7 +81,8 @@ export const getChatById = async (chatId: string): Promise<Message[]> => {
 		return messages;
 	} catch (error) {
 		console.log(error);
-		await client.close();
 		return [];
+	} finally {
+		await client.close();
 	}
 };
