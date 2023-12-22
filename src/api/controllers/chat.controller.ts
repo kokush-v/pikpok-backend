@@ -20,13 +20,12 @@ export const createChatRoom = async (sender: string, receiver: string) => {
 		await client.connect();
 		const database = client.db("pikpok_chat");
 
-		const collection = database.collection(room);
-
-		if (collection) {
-			return room;
-		}
-
-		await database.createCollection(room);
+		database
+			.createCollection(room)
+			.then(() => {})
+			.catch((err) => {
+				console.log("Room exist");
+			});
 
 		await prisma.userModel.updateMany({
 			where: { id: sender },
@@ -43,7 +42,6 @@ export const createChatRoom = async (sender: string, receiver: string) => {
 		});
 		return room;
 	} catch (error) {
-		await client.close();
 		throw error;
 	} finally {
 		await client.close();
