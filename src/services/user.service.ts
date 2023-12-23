@@ -18,6 +18,7 @@ import {
 	GetCurrentUserResponse,
 	GetUser,
 	GetCurrentUser,
+	GetChatsResponse,
 } from "../types/responces";
 import {
 	findUserById,
@@ -143,6 +144,23 @@ const getCurrent = async (
 	}
 };
 
+const getChats = async (req: Request, res: Response<GetChatsResponse>, next: NextFunction) => {
+	try {
+		const reqUser = req.user;
+
+		if (!reqUser) throw Error("Not authorize");
+
+		const { chats } = (await findUserById(reqUser.id)) as GetCurrentUser;
+
+		res.status(200).json({
+			data: chats,
+			status: 200,
+		});
+	} catch (error: any) {
+		res.status(400).json({ data: { error: error.message }, status: 400 });
+	}
+};
+
 const updateAvatar = async (
 	req: Request,
 	res: Response<FileUploadResponse>,
@@ -214,6 +232,7 @@ export const userService = {
 		get,
 		patch,
 		getCurrent,
+		getChats,
 		updateAvatar,
 		followUser,
 	},

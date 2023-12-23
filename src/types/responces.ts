@@ -33,6 +33,10 @@ export interface GetCurrentUserResponse extends Status {
 	data: GetCurrentUser | any;
 }
 
+export interface GetChatsResponse extends Status {
+	data: string[] | any;
+}
+
 export interface FileUploadResponse extends Status {
 	data:
 		| {

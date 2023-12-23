@@ -3,7 +3,7 @@ import { UserRegistration, ReqUser, UserLogin, UserPatch } from "../../types/req
 import { hashPassword } from "../../lib/bcrypt.config";
 import bcrypt from "bcrypt";
 import { generateToken } from "../../middleware/jwt";
-import { GetUser } from "../../types/responces";
+import { GetCurrentUser, GetUser } from "../../types/responces";
 import { userPatchSchema } from "../../types/zod/user.shema";
 const prisma = new PrismaClient();
 
@@ -102,7 +102,7 @@ export const userPatch = async (user: UserPatch): Promise<GetUser> => {
 	}
 };
 
-export const findUserById = async (userId: string): Promise<GetUser | null> => {
+export const findUserById = async (userId: string): Promise<GetUser | GetCurrentUser | null> => {
 	try {
 		const dbUser = await prisma.userModel.findUnique({
 			where: { id: userId },

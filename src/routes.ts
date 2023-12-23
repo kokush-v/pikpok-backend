@@ -14,6 +14,7 @@ export const routes = (app: Express) => {
 
 	app.patch("/user/:userNameOrId/patch", validateAuthToken, userService.api.patch);
 	app.get("/user", validateAuthToken, userService.api.getCurrent);
+	app.get("/user/chats", validateAuthToken, userService.api.getChats);
 	app.get("/user/:userNameOrId", validateAuthTokenPublic, userService.api.get);
 	app.get("/user/:userNameOrId/posts", validateAuthTokenPublic, postService.api.getPostsByUser);
 	app.post(
