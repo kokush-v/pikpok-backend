@@ -82,9 +82,12 @@ const patch = async (
 	next: NextFunction
 ) => {
 	try {
-		const { userNameOrId } = req.params;
+		const reqUser = req.user;
 		const user = req.body;
-		const response = await userPatch({ ...user, id: userNameOrId });
+
+		if (!reqUser) throw Error("Not authorize");
+
+		const response = await userPatch({ ...user, id: reqUser.id });
 
 		res.status(200).json({
 			data: response,

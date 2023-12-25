@@ -12,7 +12,7 @@ export const routes = (app: Express) => {
 	app.post("/auth/registration", validateRegistration, userService.api.reg);
 	app.post("/auth/login", validateLogin, userService.api.login);
 
-	app.patch("/user/:userNameOrId/patch", validateAuthToken, userService.api.patch);
+	app.patch("/user/patch", validateAuthToken, userService.api.patch);
 	app.get("/user", validateAuthToken, userService.api.getCurrent);
 	app.get("/user/chats", validateAuthToken, userService.api.getChats);
 	app.get("/user/:userNameOrId", validateAuthTokenPublic, userService.api.get);
